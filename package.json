@@ -1,0 +1,10 @@
+{
+  "license": "MIT",
+  "scripts": {
+    "start": "mdx-deck",
+    "1": "mdx-deck 01-typescript/slides.mdx"
+  },
+  "dependencies": {
+    "mdx-deck": "^2.3.2"
+  }
+}

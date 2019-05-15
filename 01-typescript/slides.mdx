@@ -1,0 +1,375 @@
+import { Notes } from 'mdx-deck';
+import main from '@mdx-deck/themes/book';
+import highlight from '@mdx-deck/themes/syntax-highlighter-prism';
+
+export const themes = [main, highlight];
+
+# Typescript Goodies
+
+<Notes>
+  These are some advanced typescript features that
+  you may or may not be familiar with, that I find
+  useful
+</Notes>
+
+---
+
+# Generics
+
+---
+
+<Notes>
+  Generics are a way to let the API consumer
+  control the type - getVal - Front end query
+  components
+</Notes>
+
+```ts
+// email: unknown
+const email = await getVal(...);
+
+// email: string
+const email = await getVal<string>(...);
+```
+
+---
+
+<Notes>
+  Example of function who's return type uses a
+  generic type. Notice that the type is not
+  exactly what is passed in, rather based on it
+</Notes>
+
+```ts
+export function getVal<T = unknown>(
+  ref: any
+): Promise<T> {
+  return ref.once('value').then(s => s.val());
+}
+```
+
+---
+
+# Array access
+
+---
+
+<Notes>
+  Typescript always assumes that if you access an
+  array element, it is there, so be careful
+</Notes>
+
+```ts
+const numbers = [1, 2, 3];
+const n = numbers[100];
+// n: number 😱
+```
+
+---
+
+# Index signature
+
+---
+
+<Notes>
+  Index signatures are used when you want to allow
+  any key in an object to be set
+</Notes>
+
+```ts
+interface CoolMap {
+  [name: string]: boolean;
+}
+
+const coolPeople: CoolMap = {};
+coolPeople.ryan = true;
+coolPeople.james = false;
+```
+
+---
+
+<Notes>
+  Be careful when acessing, it might be undefined
+</Notes>
+
+```ts
+interface CoolMap {
+  [name: string]: boolean;
+}
+
+const coolPeople: CoolMap = {};
+const person = coolPeople['adam'];
+// person: boolean 😱
+```
+
+---
+
+# Enums
+
+---
+
+<Notes>
+  Enums provide a way to provide a range of valid
+  values. By default, they are transpiled to
+  numbers
+</Notes>
+
+```ts
+enum Colors {
+  red,
+  blue,
+  green,
+}
+
+function paint(color: Color) {}
+// Can only be passed Colors.red, Colors.blue,
+// or Colors.green
+
+console.log(Colors.red); // 0
+```
+
+---
+
+<Notes>
+  Unless you are doing something crazy, you are
+  better off with a string union. You may see them
+  though
+</Notes>
+
+```ts
+type Colors = 'red' | 'blue' | 'green';
+
+function paint(color: Color) {}
+// Can only be passed 'red', 'blue', or 'green'
+```
+
+---
+
+# Type inference
+
+---
+
+<Notes>
+  Typescript attempts to guess the types of you
+  variables as you declare them
+</Notes>
+
+```ts
+const x = 5;
+// x: number
+
+const name = 'Ryan';
+// name: string
+```
+
+---
+
+<Notes>
+  At times you may want to override this guess
+</Notes>
+
+```ts
+const apple = { color: 'red' };
+
+if (isAppleJuicy(apple)) apple.juicy = true;
+// Property 'juicy' does not exist on type
+// '{ color: string; }'
+```
+
+---
+
+```ts
+interface Apple {
+  color: string;
+  juicy?: boolean;
+}
+
+// Don't use typescript inference, give it an
+// explicit type
+const apple: Apple = { color: 'red' };
+
+if (isAppleJuicy(apple)) apple.juicy = true;
+// OK 😎
+```
+
+---
+
+<Notes>
+  Another common situation is wanting your string
+  to be less broad
+</Notes>
+
+```ts
+type Color = 'red' | 'blue' | 'green';
+
+function paint(color: Color) {}
+
+let favColor = 'blue';
+if (something) favColor = 'green';
+
+paint(favColor);
+// Argument of type 'string' is not assignable
+// to parameter of type 'Color'
+```
+
+---
+
+```ts
+type Color = 'red' | 'blue' | 'green';
+
+function paint(color: Color) {}
+
+// explicit type
+let favColor: Color = 'blue';
+if (something) favColor = 'green';
+
+paint(favColor);
+// OK 😎
+```
+
+---
+
+# Unions + Discriminating union
+
+---
+
+<Notes>
+  A union captures multiple types into one
+</Notes>
+
+```ts
+interface Dog {
+  name: string;
+  barks: true;
+}
+
+interface Cat {
+  name: string;
+  meows: true;
+}
+
+type Pet = Dog | Cat;
+```
+
+---
+
+<Notes>
+  With a union type, you will only be able to use
+  the fields that are shared between them
+</Notes>
+
+```ts
+function feed(pet: Pet) {
+  console.log(pet.name);
+  // OK
+  console.log(pet.meows);
+  // Property 'meows' does not exist on type 'Pet'.
+  // Property 'meows' does not exist on type 'Dog'.
+}
+```
+
+---
+
+<Notes>
+  If the union contains a discriminating field,
+  typescript will figure stuff out
+</Notes>
+
+```ts
+interface Dog {
+  type: 'DOG';
+  name: string;
+  barks: true;
+}
+interface Cat {
+  type: 'CAT';
+  name: string;
+  meows: true;
+}
+type Pet = Dog | Cat;
+```
+
+---
+
+```ts
+function feed(pet: Pet) {
+  if (pet.type === 'CAT') {
+    console.log(pet.meows);
+    // pet: Cat
+  } else {
+    console.log(pet.barks);
+    // pet: Dog
+  }
+}
+```
+
+---
+
+# Type guard
+
+---
+
+<Notes>
+  If you need to discriminate a union but there
+  arent' shared types, you can use a type guard.
+  In this case we can use the barks/meows
+</Notes>
+
+```ts
+interface Dog {
+  name: string;
+  barks: true;
+}
+interface Cat {
+  name: string;
+  meows: true;
+}
+type Pet = Dog | Cat;
+```
+
+---
+
+<Notes>
+  If you need to discriminate a union but there
+  arent' shared types, you can use a type guard.
+  In this case we can use the barks/meows
+</Notes>
+
+```ts
+function isDog(pet: Pet): pet is Dog {
+  return (pet as Dog).barks !== undefined;
+}
+
+function feed(pet: Pet) {
+  if (isDog(pet)) {
+    console.log(pet.barks);
+    // pet: Dog
+  }
+}
+```
+
+---
+
+# Inheritance
+
+---
+
+<Notes>
+  If you have multiple types that share some
+  common fields, you can use inheritance
+</Notes>
+
+```ts
+interface Animal {
+  name: string;
+  teeth: number;
+}
+
+interface Cat extends Animal {
+  lives: number;
+}
+```
+
+---
+
+# The End 🤩
