@@ -1,0 +1,71 @@
+import { Notes } from 'mdx-deck';
+import {
+  Image,
+  Split,
+} from '@mdx-deck/components';
+
+import main from '@mdx-deck/themes/base';
+import highlight from '@mdx-deck/themes/syntax-highlighter-prism';
+
+export const themes = [main, highlight];
+
+# GraphQL
+
+## A query language for your API
+
+<Notes>
+  I think of graphql as a similar tool as
+  typescript. It allows us to encode information
+  about our code (possibilities, constraints) in a
+  way that the computer understands. By spending
+  more time up front defining our application's
+  behavior, we get a bunch of cool stuff.
+</Notes>
+
+---
+
+## GraphQL is a specification, not an implementation
+
+<Notes>
+  The example today will be in Javascript, but
+  there are graphql implementations in most
+  languages. Javascript is the most common though.
+</Notes>
+
+---
+
+# Get exactly what you ask for 🤪
+
+---
+
+## Syntax!
+
+<Split>
+```graphql
+query {
+  user {
+    name
+    email
+  }
+}
+```
+
+```graphql
+query {
+  user {
+    name
+    email
+  }
+}
+```
+</Split>
+
+<Notes>a</Notes>
+
+---
+
+GET WHAT YOU ASK FOR
+
+TYPES
+
+CONNECTIONS (no n + 1)
