@@ -1,8 +1,5 @@
 import { Notes } from 'mdx-deck';
-import {
-  Image,
-  Split,
-} from '@mdx-deck/components';
+import { FullScreenCode } from '@mdx-deck/layouts';
 
 import main from '@mdx-deck/themes/base';
 import highlight from '@mdx-deck/themes/syntax-highlighter-prism';
@@ -38,34 +35,192 @@ export const themes = [main, highlight];
 
 ---
 
-## Syntax!
+<FullScreenCode>
 
-<Split>
 ```graphql
+# Query
 query {
   user {
     name
     email
   }
 }
-```
 
-```graphql
-query {
-  user {
-    name
-    email
+# Response
+{
+  "data": {
+    "user": {
+      "name": "Ryan",
+      "email": "ryan@mytrellis.com"
+    }
   }
 }
 ```
-</Split>
 
-<Notes>a</Notes>
+</FullScreenCode>
+
+<Notes>
+  A simple query for a user. Notice how the shape
+  of the response matches the shape of the request
+</Notes>
 
 ---
 
-GET WHAT YOU ASK FOR
+# Get exactly what you ask for 🤪
 
-TYPES
+---
 
-CONNECTIONS (no n + 1)
+```graphql
+# Query
+query {
+  user {
+    name
+    email
+  }
+}
+```
+
+```json
+// Response
+{
+  "data": {
+    "user": {
+      "name": "Ryan",
+      "email": "ryan@mytrellis.com"
+    }
+  }
+}
+```
+
+<Notes>
+  A simple query for a user. Above is the query
+  that a client would send (via HTTP), and below
+  is the response. Notice how the shape of the
+  response matches the shape of the request. If
+  you left out one of those fields in the request,
+  it would not be sent in the response.
+</Notes>
+
+---
+
+# Types
+
+---
+
+### Example User type
+
+```graphql
+type User {
+  name: String
+  email: String
+  age: Int
+}
+```
+
+<Notes>
+  When you build a graphql server, you need to
+  define all of the types. This allows your server
+  to verify that the types it is sending down
+  matches what you expect. It also allows for some
+  really great tooling (introspection, caching,
+  type generation)
+</Notes>
+
+---
+
+# The life of a request
+
+<Notes>
+  Implement the name resolver:
+  ```
+  type Query {
+    name: String
+  }
+  ```
+  Explain:
+  index.js
+  what is a resolver
+  arguments
+  root
+  context briefly
+  ask what questions are there
+</Notes>
+
+---
+
+## Each field has it's own resolver
+
+<Notes>
+  This is a really powerful concept, and this is
+  where the Graph in graphql comes from. We will
+  come back to this later, but let's look at how
+  to implement a more complex set of resolvers
+  ```
+  type Query {
+    user: User
+  }
+  type User {
+    name: String
+    age: Int
+  }
+  ```
+  Explain:
+  A field that returns a User should always return a "User"
+  A field on a User will always be passed a "User"
+  What gets passed can change based on args
+  Can be loosely coupled with underlying data (eg dogyears)
+</Notes>
+
+---
+
+## Real example
+
+<Notes>
+  Let's use a fake database to explore what a real server would look like
+  ```
+  type Query {
+    user(id: Int): User
+    users: [User]
+  }
+  type User {
+    name: String
+    age: Int
+  }
+  ```
+</Notes>
+
+---
+
+## Resolver-ception
+
+<Notes>
+  Because each resolver is independent, you can
+  resolve relationships very easily. With a rest
+  API, you might return a list of friend ids. But
+  with graphql, we can return a list of Users
+  directly!  No additional code needed to perform
+  deep queries.
+  ```
+  type Query {
+    user(id: Int): User
+    users: [User]
+  }
+  type User {
+    name: String
+    age: Int
+    friends: [User]
+  }
+  ```
+</Notes>
+
+---
+
+# That's all folks
+
+<Notes>
+  Nullability
+  Type generation
+  Fragments
+  Interfaces
+  Unions
+<Notes />
