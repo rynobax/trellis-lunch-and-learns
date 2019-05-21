@@ -17,6 +17,7 @@ export const themes = [main, highlight];
   way that the computer understands. By spending
   more time up front defining our application's
   behavior, we get a bunch of cool stuff.
+  {/* Comment :) */}
 </Notes>
 
 ---
@@ -132,6 +133,11 @@ type User {
 
 <Notes>
   Implement the name resolver:
+  
+  type Query {
+    name: String
+  }
+  
   Explain:
   index.js
   what is a resolver
@@ -150,6 +156,15 @@ type User {
   where the Graph in graphql comes from. We will
   come back to this later, but let's look at how
   to implement a more complex set of resolvers
+  ```
+  type Query {
+    user: User
+  }
+  type User {
+    name: String
+    age: Int
+  }
+  ```
   Explain:
   A field that returns a User should always return a "User"
   A field on a User will always be passed a "User"
@@ -163,6 +178,16 @@ type User {
 
 <Notes>
   Let's use a fake database to explore what a real server would look like
+  ```
+  type Query {
+    user(id: Int): User
+    users: [User]
+  }
+  type User {
+    name: String
+    age: Int
+  }
+  ```
 </Notes>
 
 ---
@@ -176,16 +201,27 @@ type User {
   with graphql, we can return a list of Users
   directly!  No additional code needed to perform
   deep queries.
+  
+  type Query {
+    user(id: Int): User
+    users: [User]
+  }
+  type User {
+    name: String
+    age: Int
+    friends: [User]
+  }
+  
 </Notes>
 
 ---
 
 # That's all folks
 
-<Notes>
+<>
   Nullability
   Type generation
   Fragments
   Interfaces
   Unions
-</Notes>
+</ Notes>
