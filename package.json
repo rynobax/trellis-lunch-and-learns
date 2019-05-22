@@ -1,9 +1,10 @@
 {
   "license": "MIT",
   "scripts": {
-    "start": "mdx-deck",
     "1": "mdx-deck 01-typescript/slides.mdx",
-    "2": "mdx-deck 02-graphql/slides.mdx"
+    "2": "mdx-deck 02-graphql/slides.mdx",
+    "3": "mdx-deck 03-aquila/slides.mdx",
+    "start": "mdx-deck"
   },
   "dependencies": {
     "mdx-deck": "^2.3.2"
